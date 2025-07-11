@@ -24,6 +24,7 @@ def load_nltk_resources():
     """
     nltk_resources = {
         'punkt': 'tokenizers/punkt',
+        'punkt_tab': 'tokenizers/punkt_tab',
         'stopwords': 'corpora/stopwords',
         'wordnet': 'corpora/wordnet',
         'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger'
@@ -39,7 +40,6 @@ def load_nltk_resources():
         except LookupError:
             st.info(f"Downloading NLTK '{name}' to {NLTK_DATA_PATH}...")
             try:
-                # Explicitly download to the defined path
                 nltk.download(name, download_dir=NLTK_DATA_PATH)
             except Exception as e:
                 st.error(f"Failed to download NLTK '{name}': {e}")
