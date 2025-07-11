@@ -81,7 +81,7 @@ To set up and run the AI Insight Hub locally, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/alimustafa0/AI_Insight_Hub.git
     cd ai_insight_hub
     ```
 
