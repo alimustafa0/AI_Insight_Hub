@@ -81,7 +81,7 @@ To set up and run the AI Insight Hub locally, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/alimustafa0/AI_Insight_Hub.git
     cd ai_insight_hub
     ```
 
@@ -138,30 +138,30 @@ Interact with the various modules by navigating through the expanders on the mai
 
 The project is organized into a modular and clean structure:
 
+```bash
 ai_insight_hub/
 ├── .streamlit/             # Streamlit configuration files (e.g., config.toml)
 ├── assets/                 # Static assets like images (banner.jpg) and Lottie animations
-│   ├── lottie/
-│   └── banner.jpg
-├── data/                   # Sample datasets (CSVs) and images for testing modules
-│   ├── (CSVs and .jpg images)
+│   ├── lottie/             # Lottie animation JSON files
+│   └── banner.jpg          # Main banner image for the application
 ├── modules/                # Core logic for each data science functionality
-│   ├── image_classifier.py # Image classification and processing logic
+│   ├── image_classifier.py # Logic for image classification and processing
 │   ├── ml_trainer.py       # Machine learning model training and preprocessing logic
-│   ├── data_analyzer.py    # Data analysis and visualization utilities
-│   ├── nlp_engine.py       # Natural Language Processing core functions
-│   └── utils.py            # General utility functions (math, logic, quiz generation)
-├── pages/                  # Streamlit pages for each module (if multi-page app)
-│   ├── init.py
-│   ├── Data_Analyzer.py    # Streamlit app for Data Analyzer module
-│   ├── Image_Classifier.py # Streamlit app for Image Classifier module
-│   ├── Learning_Tools.py   # Streamlit app for Teaching & Learning Tools module
-│   ├── ML_Model_Builder.py # Streamlit app for ML Model Builder module
-│   └── NLP_Analyzer.py     # Streamlit app for NLP Analyzer module
+│   ├── data_analyzer.py    # Utilities for data analysis and visualization
+│   ├── nlp_engine.py       # Core functions for Natural Language Processing
+│   └── utils.py            # General utility functions (math, logic, quiz generation, etc.)
+├── pages/                  # Streamlit pages for each module (if multi-page app structure is used)
+│   ├── __init__.py         # Python package initializer
+│   ├── Data_Analyzer.py    # Streamlit app page for the Data Analyzer module
+│   ├── Image_Classifier.py # Streamlit app page for the Image Classifier module
+│   ├── Learning_Tools.py   # Streamlit app page for the Teaching & Learning Tools module
+│   ├── ML_Model_Builder.py # Streamlit app page for the ML Model Builder module
+│   └── NLP_Analyzer.py     # Streamlit app page for the NLP Analyzer module
 ├── venv/                   # Python virtual environment (contains installed packages)
 ├── main.py                 # The main Streamlit application entry point
-├── requirements.txt        # List of Python dependencies
-└── README.md               # Project documentation
+├── requirements.txt        # List of Python dependencies for environment setup
+└── README.md               # Project documentation and overview
+```
 
 ## 🧑‍💻 Developer
 

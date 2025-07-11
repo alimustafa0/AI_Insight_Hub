@@ -1,0 +1,8 @@
+# NLTK data packages (Streamlit Cloud automatically downloads these if listed)
+punkt
+stopwords
+wordnet
+averaged_perceptron_tagger
+
+# Command to download spaCy English model
+python -m spacy download en_core_web_sm
