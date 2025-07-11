@@ -5,15 +5,23 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from transformers import pipeline
 import nltk.downloader
 import subprocess
+import os
 
+
+# This directory will be created and used for NLTK downloads
+NLTK_DATA_PATH = os.path.join(os.getcwd(), "nltk_data")
+
+# This MUST be done before any nltk.data.find() or nltk.download() calls
+if NLTK_DATA_PATH not in nltk.data.path:
+    nltk.data.path.append(NLTK_DATA_PATH)
+    
 # Cache NLTK downloads and SpaCy model loading to prevent repeated execution
 @st.cache_resource
 def load_nltk_resources():
     """
-    Downloads necessary NLTK data if not already present.
-    Uses st.cache_resource to ensure data is downloaded only once per deployment.
+    Downloads necessary NLTK data if not already present,
+    ensuring they are stored in a persistent and accessible location.
     """
-    # Define the NLTK resources needed
     nltk_resources = {
         'punkt': 'tokenizers/punkt',
         'stopwords': 'corpora/stopwords',
@@ -21,22 +29,26 @@ def load_nltk_resources():
         'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger'
     }
 
+    # Ensure the NLTK data directory exists
+    os.makedirs(NLTK_DATA_PATH, exist_ok=True)
+
     for name, path in nltk_resources.items():
         try:
-            # Try to find the resource locally
-            nltk.data.find(path)
-        except LookupError: # <--- CORRECTED: Catch LookupError here
-            st.info(f"Downloading NLTK '{name}'...")
+            # Try to find the resource locally within NLTK_DATA_PATH
+            nltk.data.find(path, paths=[NLTK_DATA_PATH]) # Explicitly search in our path
+        except LookupError:
+            st.info(f"Downloading NLTK '{name}' to {NLTK_DATA_PATH}...")
             try:
-                nltk.download(name)
-            except Exception as e: # Catch errors during the actual download
+                # Explicitly download to the defined path
+                nltk.download(name, download_dir=NLTK_DATA_PATH)
+            except Exception as e:
                 st.error(f"Failed to download NLTK '{name}': {e}")
-                return False # Indicate failure
+                return False
         except Exception as e: # Catch any other unexpected errors during find
             st.error(f"An unexpected error occurred while checking NLTK '{name}': {e}")
-            return False # Indicate failure
+            return False
 
-    return True # Indicate success
+    return True
 
 @st.cache_resource
 def load_spacy_model():
@@ -45,27 +57,24 @@ def load_spacy_model():
     Uses st.cache_resource for efficient, one-time loading.
     """
     try:
-        # Attempt to load the model
         nlp = spacy.load("en_core_web_sm")
     except OSError:
         st.info("SpaCy model 'en_core_web_sm' not found. Attempting to download...")
         try:
-            # Use subprocess to run the spaCy download command
-            # This is more robust for deployment environments
             result = subprocess.run(
                 ["python", "-m", "spacy", "download", "en_core_web_sm"],
-                check=True, # Raise CalledProcessError if command returns non-zero exit status
-                capture_output=True, # Capture stdout and stderr
-                text=True # Decode stdout/stderr as text
+                check=True,
+                capture_output=True,
+                text=True
             )
             st.success(f"SpaCy model downloaded successfully: {result.stdout}")
-            nlp = spacy.load("en_core_web_sm") # Load the model after successful download
+            nlp = spacy.load("en_core_web_sm")
         except subprocess.CalledProcessError as e:
             st.error(f"Failed to download spaCy model: {e.stderr}")
-            raise # Re-raise the exception to indicate a critical failure
+            raise
         except Exception as e:
             st.error(f"An unexpected error occurred during spaCy model download or load: {e}")
-            raise # Re-raise other exceptions
+            raise
     return nlp
 
 @st.cache_resource
