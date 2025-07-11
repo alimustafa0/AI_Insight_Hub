@@ -2,28 +2,55 @@ import streamlit as st
 import spacy
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
-import matplotlib.pyplot as plt
 from transformers import pipeline
 
 # Cache NLTK downloads and SpaCy model loading to prevent repeated execution
 @st.cache_resource
 def load_nltk_resources():
+    """
+    Downloads necessary NLTK data if not already present.
+    Uses st.cache_resource to ensure data is downloaded only once per deployment.
+    """
     try:
-        nltk.download('punkt', quiet=True)
-        nltk.download('stopwords', quiet=True)
-    except Exception as e:
-        st.error(f"Failed to download NLTK resources: {e}. Please check your internet connection.")
-    return True
+        nltk.data.find('tokenizers/punkt')
+    except nltk.downloader.DownloadError:
+        st.info("Downloading NLTK 'punkt' tokenizer...")
+        nltk.download('punkt')
+
+    try:
+        nltk.data.find('corpora/stopwords')
+    except nltk.downloader.DownloadError:
+        st.info("Downloading NLTK 'stopwords' corpus...")
+        nltk.download('stopwords')
+
+    try:
+        nltk.data.find('corpora/wordnet')
+    except nltk.downloader.DownloadError:
+        st.info("Downloading NLTK 'wordnet' corpus...")
+        nltk.download('wordnet')
+
+    try:
+        nltk.data.find('taggers/averaged_perceptron_tagger')
+    except nltk.downloader.DownloadError:
+        st.info("Downloading NLTK 'averaged_perceptron_tagger'...")
+        nltk.download('averaged_perceptron_tagger')
+
+    return True # Indicate success
 
 @st.cache_resource
 def load_spacy_model():
+    """
+    Loads the spaCy 'en_core_web_sm' model, downloading it if not found.
+    Uses st.cache_resource for efficient, one-time loading.
+    """
     try:
-        # Ensure 'en_core_web_sm' is downloaded: python -m spacy download en_core_web_sm
-        return spacy.load("en_core_web_sm")
-    except Exception as e:
-        st.error(f"Failed to load SpaCy model 'en_core_web_sm': {e}. Please run `python -m spacy download en_core_web_sm` in your terminal.")
-        st.stop() # Stop the app if the model can't be loaded
-    return None # Should not be reached if st.stop() is called
+        nlp = spacy.load("en_core_web_sm")
+    except OSError:
+        st.info("SpaCy model 'en_core_web_sm' not found. Downloading...")
+        # Use spacy.cli.download to download the model programmatically
+        spacy.cli.download("en_core_web_sm")
+        nlp = spacy.load("en_core_web_sm") # Load after download
+    return nlp
 
 @st.cache_resource
 def load_sentiment_pipeline():
