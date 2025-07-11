@@ -3,6 +3,7 @@ import spacy
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from transformers import pipeline
+import nltk.downloader
 
 # Cache NLTK downloads and SpaCy model loading to prevent repeated execution
 @st.cache_resource
@@ -13,7 +14,7 @@ def load_nltk_resources():
     """
     try:
         nltk.data.find('tokenizers/punkt')
-    except nltk.downloader.DownloadError:
+    except nltk.downloader.DownloadError: # This line will now work correctly
         st.info("Downloading NLTK 'punkt' tokenizer...")
         nltk.download('punkt')
 
