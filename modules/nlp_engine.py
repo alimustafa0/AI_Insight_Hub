@@ -38,7 +38,7 @@ def load_nltk_resources():
             # Try to find the resource locally within NLTK_DATA_PATH
             nltk.data.find(path, paths=[NLTK_DATA_PATH]) # Explicitly search in our path
         except LookupError:
-            st.info(f"Downloading NLTK '{name}' to {NLTK_DATA_PATH}...")
+            # st.info(f"Downloading NLTK '{name}' to {NLTK_DATA_PATH}...")
             try:
                 nltk.download(name, download_dir=NLTK_DATA_PATH)
             except Exception as e:
